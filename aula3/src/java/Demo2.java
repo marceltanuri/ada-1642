@@ -96,6 +96,67 @@ class Demo2 {
                     break;
                 case 6:
                     // 1. Aplicar filtros manualmente (Programação Imperativa)
+                    List<HistoricoTreino> resultados = new ArrayList<>();
+                    for (int i = 0; i < historicos.size(); i++) {
+                        HistoricoTreino ht = historicos.get(i);
+                        boolean incluir = true;
+
+                        if (filtroModalidade != null) {
+                            if (ht.getModalidade() != filtroModalidade) {
+                                incluir = false;
+                            }
+                        }
+                        if (filtroTempoMaximo != null) {
+                            if (ht.getTempo() > filtroTempoMaximo) {
+                                incluir = false;
+                            }
+                        }
+                        if (filtroDistanciaMinima != null) {
+                            if (ht.getDistancia() < filtroDistanciaMinima) {
+                                incluir = false;
+                            }
+                        }
+
+                        if (incluir) {
+                            resultados.add(ht);
+                        }
+                    }
+
+                    // 2. Aplicar ordenação manualmente
+                    if (!criteriosOrdenacao.isEmpty()) {
+                        Collections.sort(resultados, new Comparator<HistoricoTreino>() {
+                            @Override
+                            public int compare(HistoricoTreino h1, HistoricoTreino h2) {
+                                for (int i = 0; i < criteriosOrdenacao.size(); i++) {
+                                    int criterio = criteriosOrdenacao.get(i);
+                                    int resultadoComparacao = 0;
+
+                                    if (criterio == 1) {
+                                        resultadoComparacao = Double.compare(h1.getTempo(), h2.getTempo());
+                                    } else if (criterio == 2) {
+                                        resultadoComparacao = Double.compare(h2.getTempo(), h1.getTempo());
+                                    } else if (criterio == 3) {
+                                        resultadoComparacao = Double.compare(h1.getDistancia(), h2.getDistancia());
+                                    } else if (criterio == 4) {
+                                        resultadoComparacao = Double.compare(h2.getDistancia(), h1.getDistancia());
+                                    } else if (criterio == 5) {
+                                        // Enum implementa Comparable por padrão
+                                        resultadoComparacao = h1.getModalidade().compareTo(h2.getModalidade());
+                                    }
+
+                                    if (resultadoComparacao != 0) {
+                                        return resultadoComparacao;
+                                    }
+                                }
+                                return 0;
+                            }
+                        });
+                    }
+
+                    System.out.println("\n--- RESULTADOS (" + resultados.size() + ") ---");
+                    for (int i = 0; i < resultados.size(); i++) {
+                        System.out.println(resultados.get(i));
+                    }
                     break;
                 case 0:
                     System.out.println("Saindo...");
